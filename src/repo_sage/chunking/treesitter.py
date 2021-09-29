@@ -12,7 +12,7 @@ from __future__ import annotations
 import importlib
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
-from functools import lru_cache
+from functools import cache
 
 from tree_sitter import Language, Node, Parser
 
@@ -162,7 +162,7 @@ SPECS: dict[str, LanguageSpec] = {
 SPECS["tsx"] = SPECS["typescript"]
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_parser(language: str) -> Parser | None:
     """Return a cached parser, or ``None`` if the grammar package is unavailable."""
     target = _GRAMMARS.get(language)

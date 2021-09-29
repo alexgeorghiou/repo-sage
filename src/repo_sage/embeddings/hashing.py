@@ -8,6 +8,7 @@ enough signal for identifier-heavy code queries.
 from __future__ import annotations
 
 import hashlib
+import itertools
 import math
 from collections import Counter
 from collections.abc import Sequence
@@ -38,7 +39,7 @@ class HashingEmbedder:
     def _embed_one(self, text: str) -> list[float]:
         tokens = tokenize(text)
         features = Counter(tokens)
-        features.update(f"{a}|{b}" for a, b in zip(tokens, tokens[1:], strict=False))
+        features.update(f"{a}|{b}" for a, b in itertools.pairwise(tokens))
         vec = [0.0] * self.dimension
         for feature, count in features.items():
             idx, sign = _bucket(feature, self.dimension)

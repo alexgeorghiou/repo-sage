@@ -56,7 +56,9 @@ FILENAMES: dict[str, str] = {
     "LICENSE": "text",
 }
 
-TREE_SITTER_LANGUAGES = frozenset({"python", "javascript", "typescript", "tsx", "go", "rust", "java"})
+TREE_SITTER_LANGUAGES = frozenset(
+    {"python", "javascript", "typescript", "tsx", "go", "rust", "java"}
+)
 
 
 def detect_language(path: str) -> str | None:

@@ -8,8 +8,50 @@ _WORD = re.compile(r"[A-Za-z_][A-Za-z0-9_]*|\d+")
 _CAMEL = re.compile(r"[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+|\d+")
 
 STOPWORDS = frozenset(
-    """a an and are as at be by does do for from how i in is it of on or the this that to
-    what when where which who why with which can you me my we our there their its into""".split()
+    [
+        "a",
+        "an",
+        "and",
+        "are",
+        "as",
+        "at",
+        "be",
+        "by",
+        "does",
+        "do",
+        "for",
+        "from",
+        "how",
+        "i",
+        "in",
+        "is",
+        "it",
+        "of",
+        "on",
+        "or",
+        "the",
+        "this",
+        "that",
+        "to",
+        "what",
+        "when",
+        "where",
+        "which",
+        "who",
+        "why",
+        "with",
+        "which",
+        "can",
+        "you",
+        "me",
+        "my",
+        "we",
+        "our",
+        "there",
+        "their",
+        "its",
+        "into",
+    ]
 )
 
 
