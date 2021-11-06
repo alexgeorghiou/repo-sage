@@ -116,13 +116,19 @@ class FileFilter:
         text = data.decode("utf-8", errors="replace").replace("\r\n", "\n")
         return SourceFile(path=rel_path, language=detect_language(rel_path), content=text)
 
-    def walk(self) -> Iterator[SourceFile]:
+    def candidate_paths(self) -> list[str]:
+        """Every non-ignored file under the root, for sources without git history."""
+        out: list[str] = []
         for full in sorted(self.root.rglob("*")):
             if not full.is_file():
                 continue
             rel = full.relative_to(self.root).as_posix()
-            if rel.startswith(".git/"):
-                continue
+            if not self.is_ignored(rel):
+                out.append(rel)
+        return out
+
+    def walk(self) -> Iterator[SourceFile]:
+        for rel in self.candidate_paths():
             sf = self.load(rel)
             if sf is not None:
                 yield sf
