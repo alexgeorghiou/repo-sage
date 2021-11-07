@@ -144,7 +144,7 @@ class GitSource:
         if repo is None:
             return False
         try:
-            repo.commit(sha)
-        except (ValueError, git.BadName, git.GitCommandError):
+            repo.git.cat_file("-e", f"{sha}^{{commit}}")
+        except git.GitCommandError:
             return False
         return True
