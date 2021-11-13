@@ -32,7 +32,7 @@ def test_filter_skips_binary_large_and_empty(tmp_path: Path):
     _write(tmp_path, "blob.dat", b"abc\x00def")
     _write(tmp_path, "big.py", "x = 1\n" * 1000)
     _write(tmp_path, "empty.py", "")
-    _write(tmp_path, "ok.py", "y = 2\r\n")
+    _write(tmp_path, "ok.py", b"y = 2\r\n")
     filt = FileFilter(tmp_path, max_bytes=1000)
     loaded = {sf.path: sf for sf in filt.walk()}
     assert list(loaded) == ["ok.py"]
