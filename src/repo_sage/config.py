@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     llm: Literal["fake", "anthropic", "openai"] = "fake"
     llm_model: str | None = None
-    llm_max_tokens: int = 1024
+    llm_max_tokens: int = 16_000
 
     reranker: Literal["lexical", "cross-encoder", "none"] = "lexical"
     cross_encoder_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
