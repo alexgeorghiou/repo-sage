@@ -19,7 +19,12 @@ _BLOCK = re.compile(
     r"```[^\n]*\n(?P<body>.*?)\n```",
     re.MULTILINE | re.DOTALL,
 )
+_LINE_NO = re.compile(r"^\s*\d+ \| ?")
 _QUESTION = re.compile(r"^Question:\s*(?P<q>.+)$", re.MULTILINE)
+
+
+def _strip_number(line: str) -> str:
+    return _LINE_NO.sub("", line).strip()
 
 
 @dataclass(slots=True)
@@ -59,6 +64,6 @@ class FakeLLM:
         for m in chosen:
             label = f"`{m.group('symbol')}`" if m.group("symbol") else "this code"
             cite = f"[{m.group('path')}:{m.group('start')}-{m.group('end')}]"
-            first = next((ln.strip() for ln in m.group("body").splitlines() if ln.strip()), "")
+            first = next((ln for ln in map(_strip_number, m.group("body").splitlines()) if ln), "")
             parts.append(f"The relevant logic is in {label} {cite}, starting with `{first[:80]}`.")
         return " ".join(parts)
