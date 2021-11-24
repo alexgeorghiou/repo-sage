@@ -9,9 +9,7 @@ from collections.abc import Iterable, Sequence
 from repo_sage.models import Chunk, Citation
 
 _BRACKET = re.compile(r"\[([^\[\]\n]{3,400})\]")
-_ONE = re.compile(
-    r"^`?(?P<path>[\w.@+\-/]+):L?(?P<start>\d+)(?:\s*[-\u2013]\s*L?(?P<end>\d+))?`?$"
-)
+_ONE = re.compile(r"^`?(?P<path>[\w.@+\-/]+):L?(?P<start>\d+)(?:\s*[-\u2013]\s*L?(?P<end>\d+))?`?$")
 
 
 def parse_citations(text: str) -> list[Citation]:
