@@ -18,7 +18,7 @@ from repo_sage.chunking.base import Chunker
 from repo_sage.chunking.code import CodeChunker
 from repo_sage.embeddings.base import Embedder
 from repo_sage.ingest.filters import FileFilter
-from repo_sage.ingest.git_source import GitSource, repo_name_from_source, slugify
+from repo_sage.ingest.git_source import GitSource, is_remote, repo_name_from_source, slugify
 from repo_sage.models import Chunk, Repo
 from repo_sage.store.base import Store
 
@@ -69,6 +69,10 @@ class Indexer:
 
     def register(self, source: str, *, name: str | None = None, branch: str | None = None) -> Repo:
         """Create (or return the existing) repo record for ``source``. Does not index."""
+        if not is_remote(source):
+            if not Path(source).is_dir():
+                raise FileNotFoundError(f"local repository not found: {source}")
+            source = str(Path(source).resolve())
         display = name or repo_name_from_source(source)
         repo_id = slugify(display)
         existing = self.store.get_repo(repo_id)
