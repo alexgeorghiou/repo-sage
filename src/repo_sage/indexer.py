@@ -45,8 +45,9 @@ class IndexReport:
     skipped: dict[str, str] = field(default_factory=dict)
 
     def summary(self) -> str:
+        at = self.commit[:10] if self.commit else "working tree"
         return (
-            f"{self.repo_id}: {self.mode.value} @ {(self.commit or 'working-tree')[:10]} - "
+            f"{self.repo_id}: {self.mode.value} @ {at} - "
             f"{self.files_indexed} files indexed, {self.files_deleted} removed, "
             f"{self.chunks_written} chunks written, {len(self.skipped)} skipped"
         )
