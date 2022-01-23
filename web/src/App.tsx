@@ -53,7 +53,11 @@ export default function App() {
   async function remove(id: string) {
     if (!window.confirm(`Remove ${id} and its index?`)) return;
     await api.deleteRepo(id);
-    setThreads(({ [id]: _dropped, ...rest }) => rest);
+    setThreads((t) => {
+      const next = { ...t };
+      delete next[id];
+      return next;
+    });
     setSelectedId((cur) => (cur === id ? null : cur));
     await refresh();
   }
