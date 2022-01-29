@@ -1,0 +1,46 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: sage
+      POSTGRES_PASSWORD: sage
+      POSTGRES_DB: sage
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sage -d sage"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    environment:
+      REPO_SAGE_STORE: postgres
+      REPO_SAGE_DATABASE_URL: postgresql://sage:sage@db:5432/sage
+      REPO_SAGE_EMBEDDER: ${REPO_SAGE_EMBEDDER:-hashing}
+      REPO_SAGE_EMBEDDING_DIM: ${REPO_SAGE_EMBEDDING_DIM:-384}
+      REPO_SAGE_LLM: ${REPO_SAGE_LLM:-fake}
+      REPO_SAGE_LLM_MODEL: ${REPO_SAGE_LLM_MODEL:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - repos:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./web
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  repos:
