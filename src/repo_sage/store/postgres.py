@@ -11,6 +11,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Sequence
 from typing import Any
 
+import numpy as np
 import psycopg
 from pgvector.psycopg import register_vector
 from psycopg.rows import dict_row
@@ -96,6 +97,7 @@ class PostgresStore:
     @staticmethod
     def _configure(conn: psycopg.Connection[Any]) -> None:
         register_vector(conn)
+        conn.commit()  # the pool rejects connections left inside a transaction
 
     def close(self) -> None:
         self._pool.close()
@@ -156,7 +158,7 @@ class PostgresStore:
                 c.symbol,
                 c.text,
                 " ".join(tokenize(c.search_text())),
-                c.embedding,
+                np.asarray(c.embedding, dtype=np.float32) if c.embedding is not None else None,
             )
             for c in chunks
         ]
@@ -215,8 +217,6 @@ class PostgresStore:
     # search -----------------------------------------------------------------------
 
     def dense_search(self, repo_id: str, vector: Sequence[float], k: int) -> list[ScoredChunk]:
-        import numpy as np
-
         with self._pool.connection() as conn:
             rows = conn.execute(
                 f"""
